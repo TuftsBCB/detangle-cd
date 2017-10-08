@@ -7,7 +7,6 @@ import argparse
 import numpy as np
 import igraph as ig
 import capDSD.dsdcore as dsdc
-import clustering.io_functions as io
 
 # same number of steps as in capDSD paper
 NUM_STEPS = 7
