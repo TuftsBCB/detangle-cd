@@ -1,7 +1,7 @@
 import igraph as ig
 import argparse
 import io_functions as io
-import eval_yeast2 as eval_yeast
+# import eval_yeast2 as eval_yeast
 import sys
 import random
 import statistics
@@ -111,7 +111,7 @@ def main():
         all_info['cluster_sizes'] = []
         all_info['enriched_per_size'] = []
 
-        for repeat in range(0,20):
+        for repeat in range(0,10):
                 sys.stderr.write("starting trial " + str(repeat))
                 x = random.randint(0, G.vcount()-1)
                 for i in range(1,x):
