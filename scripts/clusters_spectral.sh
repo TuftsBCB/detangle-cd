@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p clusters
+mkdir -p ./data/clusters
 
 # generate spectral clusters
 python ./src/clustering/generate_clusters.py ./data/protein.links.yeast.experiment.txt -a 1 -p 300 -s > ./data/clusters/yeast_ppi_spectral_300.txt
@@ -19,6 +19,12 @@ python ./src/clustering/split_clusters.py ./data/dsd/yeast/yeast_network_0_filte
 python ./src/clustering/split_clusters.py ./data/dsd/yeast/yeast_network_0_filtered_6.5.dsd ./data/clusters/yeast/yeast_dsd_6.5_spectral_300.txt -n ./data/dsd/yeast/yeast_network_0_filtered_6.5.nodelist -s > ./data/clusters/yeast/yeast_dsd_6.5_spectral_300_split.txt
 
 # filter small clusters
+python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_ppi_spectral_300.txt > ./data/clusters/yeast/yeast_ppi_spectral_300_filtered.txt
+python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_4.5_spectral_300.txt > ./data/clusters/yeast/yeast_dsd_4.5_spectral_300_filtered.txt
+python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_5_spectral_300.txt > ./data/clusters/yeast/yeast_dsd_5_spectral_300_filtered.txt
+python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_5.5_spectral_300.txt > ./data/clusters/yeast/yeast_dsd_5.5_spectral_300_filtered.txt
+python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_6_spectral_300.txt > ./data/clusters/yeast/yeast_dsd_6_spectral_300_filtered.txt
+python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_6.5_spectral_300.txt > ./data/clusters/yeast/yeast_dsd_6.5_spectral_300_filtered.txt
 python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_ppi_spectral_300_split.txt > ./data/clusters/yeast/yeast_ppi_spectral_300_split_filtered.txt
 python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_4.5_spectral_300_split.txt > ./data/clusters/yeast/yeast_dsd_4.5_spectral_300_split_filtered.txt
 python ./src/clustering/filter_clusters.py ./data/clusters/yeast/yeast_dsd_5_spectral_300_split.txt > ./data/clusters/yeast/yeast_dsd_5_spectral_300_split_filtered.txt
