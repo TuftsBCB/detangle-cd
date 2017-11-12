@@ -2,4 +2,5 @@
 *.swp
 
 data/clusters/*
+data/walktrap/*
 data/dsd/*
