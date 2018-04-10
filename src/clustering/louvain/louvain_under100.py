@@ -7,6 +7,9 @@ import random
 import statistics
 
 def formatx(partition, G, filename):
+        '''
+        unused function that takes a cluster and returns the cluster in DREAM format
+        '''
         i = 0
         clusters = []
         f = open(filename, "write")
@@ -22,6 +25,13 @@ def formatx(partition, G, filename):
                 #clusters.append(clusterx)
         #return clusters
 
+def format2(cluster, G):
+        nodes = ""
+        for x in cluster:
+                nodes = nodes + " " + G.vs[x]["name"]
+        nodes = " 1.0 " + nodes + "\n"
+        return nodes
+
 def build_clusters(graph):
 	partition = graph.community_multilevel(weights = 'weight', return_levels = True)[0]
 
@@ -31,16 +41,19 @@ def build_clusters(graph):
                 i += 1
                 #if len(cluster) < 3:
                 #        continue
-                if len(cluster) < 100:
-                        final_part.append(cluster)
+                if len(cluster) <= 100:
+                        final_part.append(format2(cluster, graph))
                 if len(cluster) > 100:
                         if len(partition) == 1:
-                                final_part.append(cluster)
+                                final_part.append(format2(cluster, graph))
                         else:
-                                part = build_clusters(partition.subgraph(i))
-                                for x in part:
-                                        final_part.append(x)
-
+                                print "Spliting a cluster"
+                                subG = partition.subgraph(i)
+#                                print subG.vs["name"]
+                                part = build_clusters(subG)
+                                for c in part:
+                                        final_part.append(c)
+                                        
         return final_part
                         
 
@@ -93,10 +106,10 @@ def main():
         else:
                 G = io.build_ig_graph_from_matrix(opts.dsd_file, node_list = node_list)
                 sys.stderr.write("Read in\n")
-                for edge in G.es:
-                        edge['weight'] = 1/edge['weight']
+#                for edge in G.es:
+#                        edge['weight'] = 1/edge['weight']
 
-                sys.stderr.write("flipped edges\n")
+#                sys.stderr.write("flipped edges\n")
 
         all_info = {}
 
@@ -109,7 +122,7 @@ def main():
         all_info['cluster_sizes'] = []
         all_info['enriched_per_size'] = []
 
-        for repeat in range(0,20):
+        for repeat in range(0,10):
                 sys.stderr.write("starting trial " + str(repeat))
                 x = random.randint(0, G.vcount()-1)
                 for i in range(1,x):
@@ -120,41 +133,11 @@ def main():
                 #partition = G.community_multilevel(weights = 'weight', return_levels = True)[0]
 
                 sys.stderr.write("clustered\n")
-                formatx(partition, G, "trial"+str(repeat))
-                '''
-                eval_yeast.evaluate(clusters)
-                print x
-                all_info['unused_nodes'].append(x['unused_nodes'])
-                all_info['enriched_clusters'].append(x['enriched_clusters'])
-                all_info['total_clusters'].append(x['total_clusters'])
-                all_info['ratio'].append(x['ratio'])
-                all_info['avg_enrichments'].append(x['avg_enrichments'])
-                all_info['avg_logodds'].append(x['avg_logodds'])
-                all_info['cluster_sizes'].append(x['cluster_sizes'])
-                all_info['enriched_per_size'].append(x['enriched_per_size'])
-                '''
-
-        '''
-        print "MEDIANS:"
-        print "Unclustered nodes: " + str(statistics.median(all_info['unused_nodes']))
-        print "Enriched_clusters: " + str(statistics.median(all_info['enriched_clusters']))
-        print "Total clusters: " + str(statistics.median(all_info['total_clusters']))
-        print "Enrichment ratio: " + str(statistics.median(all_info['ratio']))
-        print "Avg # of enrichments: " + str(statistics.median(all_info['avg_enrichments']))
-        print "Avg top log odds score: " + str(statistics.median(all_info['avg_logodds']))
-        print "MEANS:"
-        print "Unclustered nodes: " + str(statistics.mean(all_info['unused_nodes']))
-        print "Enriched_clusters: " + str(statistics.mean(all_info['enriched_clusters']))
-        print "Total clusters: " + str(statistics.mean(all_info['total_clusters']))
-        print "Enrichment ratio: " + str(statistics.mean(all_info['ratio']))
-        print "Avg # of enrichments: " + str(statistics.mean(all_info['avg_enrichments']))
-        print "Avg top log odds score: " + str(statistics.mean(all_info['avg_logodds']))
-        '''                                
-                #print all_info
-        # the first level seems to have more clusters
-        #partition = build_clusters(G)
-
-#        print_format(partition, G)
+                f = open("trial"+str(repeat), "w")
+                i = 0
+                for line in partition:
+                        f.write(str(i) + line)
+                        i += 1
 
 
 if __name__ == '__main__':
